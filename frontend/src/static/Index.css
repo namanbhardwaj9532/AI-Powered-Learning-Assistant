@@ -1,0 +1,42 @@
+.index-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f6f8;
+}
+
+.hero-card {
+    text-align: center;
+    background: white;
+    padding: 50px;
+    width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.hero-card h1 {
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.hero-card p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.enter-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #222;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.enter-btn:hover {
+    background: #444;
+}
