@@ -14,6 +14,7 @@ function Registration() {
 
         const response = await fetch("http://localhost:8000/register", {
             method: "POST",
+            credentials:"include",
             headers: {
                 "Content-Type": "application/json"
             },

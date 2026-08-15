@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from config.db import collection
+from fastapi.responses import JSONResponse
 
 router=APIRouter()
 
@@ -25,9 +26,12 @@ def register(user:info):
         "password":user.password
     }
     collection.insert_one(user_data)
-    return {
+
+    response = JSONResponse({
         "message":user.username + " is registered"
-    }
+    })
+
+    return response
 
 @router.post("/login")
 def login(user: info):
@@ -46,6 +50,13 @@ def login(user: info):
             "message": "wrong password"
         }
 
-    return {
+    response = JSONResponse({
         "message": "login successful"
-    }
+    })
+
+    response.set_cookie(
+        key="uid",
+        value=str(existing_user["_id"])
+    )
+
+    return response

@@ -1,7 +1,7 @@
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
-from config.db import collection
+from fastapi import FastAPI
 from routes.auth import router as auth_router
+from routes.main import router as main_router
+
 
 app=FastAPI()
 
@@ -20,3 +20,6 @@ def server():
     return {"message":"server running"}
 
 app.include_router(auth_router)
+app.include_router(main_router)
+
+
