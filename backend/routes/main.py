@@ -6,7 +6,10 @@ router=APIRouter()
 
 @router.get("/main")
 def main(user=Depends(get_user)):
-    return {"uid":user["username"]}
+    return {"uid":str(user["_id"]),
+            "username":user["username"],
+            "name":user["name"],
+            "email":user["email"]}
 
 @router.post("/logout")
 def logout(request:Request):

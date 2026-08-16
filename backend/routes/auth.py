@@ -5,12 +5,19 @@ from fastapi.responses import JSONResponse
 
 router=APIRouter()
 
+
+class reg(BaseModel):
+    name:str
+    username:str
+    email:str
+    password:str
+
 class info(BaseModel):
     username:str
     password:str
 
 @router.post("/register")
-def register(user:info):
+def register(user:reg):
 
     existing_user= collection.find_one({
         "username":user.username
@@ -22,7 +29,9 @@ def register(user:info):
         }
     
     user_data={
+        "name":user.name,
         "username":user.username,
+        "email":user.email,
         "password":user.password
     }
     collection.insert_one(user_data)
@@ -42,7 +51,7 @@ def login(user: info):
 
     if not existing_user:
         return {
-            "message": "wrong credentials"
+            "message": "no user exist"
         }
 
     if existing_user["password"] != user.password:

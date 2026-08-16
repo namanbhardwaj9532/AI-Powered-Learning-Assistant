@@ -1,0 +1,73 @@
+.notes-page {
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.notes-page h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.note-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 50px;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.note-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.note-form input,
+.note-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.note-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.note-form button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.notes-list h2 {
+    margin-bottom: 20px;
+}
+
+.note {
+    padding: 18px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.note h3 {
+    margin: 0 0 10px;
+}
+
+.note p {
+    margin: 0;
+    line-height: 1.5;
+    color: #555;
+}

@@ -3,7 +3,9 @@ import { useState } from "react";
 import "../static/Registration.css";
 
 function Registration() {
+    const [name, setname] = useState("");
     const [username, setusername] = useState("");
+    const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
     const [result, setresult] = useState("");
 
@@ -14,12 +16,14 @@ function Registration() {
 
         const response = await fetch("http://localhost:8000/register", {
             method: "POST",
-            credentials:"include",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
+                name: name,
                 username: username,
+                email: email,
                 password: password
             })
         });
@@ -35,11 +39,21 @@ function Registration() {
             <div className="registration-card">
 
                 <h1>Create Account</h1>
+
                 <p className="subtitle">
                     Register for your account
                 </p>
 
                 <form onSubmit={formsubmitted}>
+
+                    <label>Name</label>
+
+                    <input
+                        type="text"
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setname(e.target.value)}
+                    />
 
                     <label>Username</label>
 
@@ -48,6 +62,15 @@ function Registration() {
                         placeholder="Enter username"
                         value={username}
                         onChange={(e) => setusername(e.target.value)}
+                    />
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setemail(e.target.value)}
                     />
 
                     <label>Password</label>
