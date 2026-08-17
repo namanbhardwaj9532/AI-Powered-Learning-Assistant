@@ -113,15 +113,6 @@ function Main() {
 
                     <span className="notes-arrow">→</span>
                 </Link>
-                <Link to="/file" className="notes-card">
-                    <div className="notes-icon">📝</div>
-
-                    <div>
-                        <h2>files</h2>
-                    </div>
-
-                    <span className="notes-arrow">→</span>
-                </Link>
             </div>
         </div>
     );

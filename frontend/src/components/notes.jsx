@@ -6,6 +6,7 @@ function Notes() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [notes, setNotes] = useState([]);
+    const [file, setFile] = useState(null);
 
     const navigate = useNavigate();
 
@@ -29,17 +30,16 @@ function Notes() {
 
     async function addNote(e) {
         e.preventDefault();
-
+        const formdata = new FormData()
+        formdata.append("title", title);
+        formdata.append("content", content);
+        if (file) {
+            formdata.append("file", file);
+        }
         const response = await fetch("http://localhost:8000/notes", {
             method: "POST",
             credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title: title,
-                content: content
-            })
+            body: formdata
         });
 
         if (response.status === 401) {
@@ -56,6 +56,7 @@ function Notes() {
         setNotes(updatedNotes);
         setTitle("");
         setContent("");
+
     }
 
     return (
@@ -73,13 +74,16 @@ function Notes() {
                     onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <label>Content</label>
+                <label>Description</label>
                 <textarea
-                    placeholder="Write your note..."
+                    placeholder="Add a short description..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
-
+                <input
+                    type="file"
+                    onChange={(e) => setFile(e.target.files[0])}
+                />
 
                 <button type="submit">
                     Add Note
@@ -98,6 +102,7 @@ function Notes() {
                         <div className="note" key={note._id}>
                             <h3>{note.title}</h3>
                             <p>{note.content}</p>
+                            <p>{note.filename}</p>
                         </div>
                     ))
                 )}
