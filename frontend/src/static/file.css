@@ -1,0 +1,33 @@
+.file-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+}
+
+.file-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.file-header h1 {
+    margin: 0 0 10px 0;
+}
+
+.file-name {
+    color: #666;
+    font-size: 14px;
+}
+
+.file-content {
+    min-height: 500px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.note-text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 16px;
+}

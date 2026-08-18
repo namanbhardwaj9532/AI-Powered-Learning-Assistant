@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../static/Notes.css";
 
 function Notes() {
@@ -99,10 +99,17 @@ function Notes() {
                     <p>No notes yet.</p>
                 ) : (
                     notes.map((note) => (
-                        <div className="note" key={note._id}>
+                        <div className="note" key={note._id} onClick={()=>navigate(`/file/${note._id}`)}>
                             <h3>{note.title}</h3>
                             <p>{note.content}</p>
-                            <p>{note.filename}</p>
+                            <a
+                                href={`http://localhost:8000/uploads/${note.filesavedname}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {note.filename}
+                            </a>
                         </div>
                     ))
                 )}

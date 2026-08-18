@@ -16,7 +16,7 @@ function App(){
         <Route path="/registration" element={<Registration />}></Route>
         <Route path="/main" element={<Main />}></Route>
         <Route path="/notes" element={<Notes />}></Route>
-        <Route path="/file" element={<File />}></Route>
+        <Route path="/file/:note_id" element={<File />}></Route>
       </Routes>
       </BrowserRouter>
     </div>
