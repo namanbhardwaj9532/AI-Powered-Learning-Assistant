@@ -4,6 +4,8 @@ from dependencies.check import get_user
 import os
 from uuid import uuid4
 from fastapi.staticfiles import StaticFiles
+from bson import ObjectId
+from pypdf import PdfReader
 
 router=APIRouter()
 
@@ -60,3 +62,27 @@ def add_note(
         note["user_id"] = str(note["user_id"])
 
     return notes
+
+
+@router.get("/file/{note_id}")
+def get_note(note_id: str):
+
+    note = notes_collection.find_one({
+        "_id": ObjectId(note_id)
+    })
+
+    reader = PdfReader(f"uploads/{note['filesavedname']}")
+
+    tolpage=len(reader.pages)
+
+    text = ""
+
+    for page in reader.pages:
+        text += page.extract_text() or ""
+
+    return {
+        "title": note["title"],
+        "filename": note["filename"],
+        "text": text,
+        "tolpages":tolpage
+    }

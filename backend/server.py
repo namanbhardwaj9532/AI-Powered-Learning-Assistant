@@ -10,6 +10,7 @@ from bson import ObjectId
 from uuid import uuid4
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
+from config.gemini import gemini
 
 
 app=FastAPI()
@@ -34,28 +35,13 @@ app.include_router(auth_router)
 app.include_router(main_router)
 app.include_router(notes_router)
 
-from bson import ObjectId
-from pypdf import PdfReader
 
-@app.get("/file/{note_id}")
-def get_note(note_id: str):
+class chatreq(BaseModel):
+    prompt:str
 
-    note = notes_collection.find_one({
-        "_id": ObjectId(note_id)
-    })
-
-    reader = PdfReader(f"uploads/{note['filesavedname']}")
-
-    tolpage=len(reader.pages)
-
-    text = ""
-
-    for page in reader.pages:
-        text += page.extract_text() or ""
-
+@app.post("/chatbot")
+def chatbot(req:chatreq):
+    result=gemini(req.prompt)
     return {
-        "title": note["title"],
-        "filename": note["filename"],
-        "text": text,
-        "tolpages":tolpage
+        "output":result
     }

@@ -1,17 +1,29 @@
-.file-container {
-    max-width: 900px;
+.file-page {
+    display: flex;
+    gap: 30px;
+
+    max-width: 1400px;
     margin: 40px auto;
-    padding: 30px;
+
+    padding: 0 30px;
+
+    align-items: flex-start;
+}
+
+
+.file-container {
+    flex: 2;
+    min-width: 0;
 }
 
 .file-header {
-    border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
-    margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
 }
 
 .file-header h1 {
     margin: 0 0 10px 0;
+    font-size: 32px;
 }
 
 .file-name {
@@ -20,14 +32,161 @@
 }
 
 .file-content {
-    min-height: 500px;
-    padding: 20px;
+    margin-top: 30px;
+
+    padding: 25px;
+
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
+
+    background-color: #fff;
 }
 
 .note-text {
+    margin: 0;
+
     white-space: pre-wrap;
+
     line-height: 1.6;
+
     font-size: 16px;
+
+    color: #222;
+}
+
+
+
+.chat-panel {
+    flex: 1;
+
+    min-width: 320px;
+    max-width: 450px;
+
+    height: 600px;
+
+    position: sticky;
+    top: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid #ddd;
+    border-radius: 12px;
+
+    background-color: #fff;
+
+    overflow: hidden;
+}
+
+
+
+
+.chat-header {
+    padding: 20px;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.chat-header p {
+    margin: 6px 0 0;
+
+    font-size: 14px;
+
+    color: #777;
+}
+
+
+
+
+.chat-output {
+    flex: 1;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+.chat-output p {
+    margin: 0;
+}
+
+.chat-placeholder {
+    color: #999;
+}
+
+
+
+
+.chat-input {
+    display: flex;
+
+    gap: 8px;
+
+    padding: 15px;
+
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 11px 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.chat-input input:focus {
+    border-color: #555;
+}
+
+.chat-input button {
+    padding: 11px 18px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+
+
+@media (max-width: 900px) {
+
+    .file-page {
+        flex-direction: column;
+    }
+
+    .file-container {
+        width: 100%;
+    }
+
+    .chat-panel {
+        position: static;
+
+        width: 100%;
+        max-width: none;
+
+        height: 500px;
+    }
 }

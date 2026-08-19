@@ -113,6 +113,14 @@ function Main() {
 
                     <span className="notes-arrow">→</span>
                 </Link>
+                <Link to="/chatbot" className="notes-card">
+
+                    <div>
+                        <h2>chatbot</h2>
+                    </div>
+
+                    <span className="notes-arrow">→</span>
+                </Link>
             </div>
         </div>
     );
