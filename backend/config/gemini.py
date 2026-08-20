@@ -15,3 +15,10 @@ def gemini(prompt):
         input=prompt
         )
     return interaction.output_text
+
+def embed(text):
+    interaction = client.models.embed_content(
+        model="gemini-embedding-001",
+        contents=text
+    )
+    return interaction.embeddings[0].values

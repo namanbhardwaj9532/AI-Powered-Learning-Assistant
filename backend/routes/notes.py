@@ -6,6 +6,7 @@ from uuid import uuid4
 from fastapi.staticfiles import StaticFiles
 from bson import ObjectId
 from pypdf import PdfReader
+from config.gemini import embed
 
 router=APIRouter()
 
@@ -21,6 +22,21 @@ def all_notes(user=Depends(get_user)):
         note["user_id"] = str(note["user_id"])
     return notes
 
+
+def split_text(text, chunk_size=500, overlap=100):
+
+    chunks = []
+    embeddings=[]
+
+    step = chunk_size - overlap
+
+    for i in range(0, len(text), step):
+        chunk = text[i:i + chunk_size]
+        embedding=embed(chunk)
+        embeddings.append(embedding)
+        chunks.append(chunk)
+
+    return chunks, embeddings
 
 @router.post("/notes")
 def add_note(
@@ -42,13 +58,23 @@ def add_note(
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
+
+    reader=PdfReader(file_path)
+    text = ""
+    
+    for page in reader.pages:
+        text += page.extract_text() or ""
+
+    chunks,embeddings=split_text(text)
     new_note = {
         "user_id": user["_id"],
         "username": user["username"],
         "title": title,
         "content": content,
         "filename": file.filename if file else None,
-        "filesavedname": new_name
+        "filesavedname": new_name,
+        "chunks":chunks,
+        "embeddings":embeddings
     }
 
     notes_collection.insert_one(new_note)
@@ -62,6 +88,8 @@ def add_note(
         note["user_id"] = str(note["user_id"])
 
     return notes
+
+
 
 
 @router.get("/file/{note_id}")
@@ -79,6 +107,7 @@ def get_note(note_id: str):
 
     for page in reader.pages:
         text += page.extract_text() or ""
+
 
     return {
         "title": note["title"],

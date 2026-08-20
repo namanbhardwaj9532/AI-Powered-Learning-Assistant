@@ -5,7 +5,7 @@ import "../static/file.css";
 function File() {
     const [title, setTitle] = useState("");
     const [filename, setFilename] = useState("");
-    const [notetext, setNoteText] = useState("");
+    const [notetext, setNoteText] = useState([]);
     const [tol, setTol] = useState(0);
 
 
@@ -88,14 +88,14 @@ function File() {
 
                 <div className="file-content">
                     <p className="note-text">
-                        {notetext}
-                    </p>
+                                {notetext}
+                            </p>
                 </div>
 
             </div>
 
 
-         
+
             <div className="chat-panel">
 
                 <div className="chat-header">
@@ -107,7 +107,7 @@ function File() {
                 </div>
 
 
-             
+
                 <div className="chat-output">
 
                     {output ? (
@@ -121,7 +121,7 @@ function File() {
                 </div>
 
 
-            
+
                 <form
                     className="chat-input"
                     onSubmit={getResponse}

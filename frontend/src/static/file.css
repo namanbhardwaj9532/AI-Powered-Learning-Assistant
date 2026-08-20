@@ -43,8 +43,8 @@
 }
 
 .note-text {
-    margin: 0;
-
+    margin: 0 0 20px 0;
+    padding: 15px;
     white-space: pre-wrap;
 
     line-height: 1.6;
@@ -52,6 +52,8 @@
     font-size: 16px;
 
     color: #222;
+
+    border-bottom: 1px solid #ddd;
 }
 
 
