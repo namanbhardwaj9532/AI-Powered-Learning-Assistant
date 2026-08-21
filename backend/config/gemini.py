@@ -16,9 +16,11 @@ def gemini(prompt):
         )
     return interaction.output_text
 
-def embed(text):
-    interaction = client.models.embed_content(
+def embed(chunks):
+
+    result = client.models.embed_content(
         model="gemini-embedding-001",
-        contents=text
+        contents=chunks
     )
-    return interaction.embeddings[0].values
+
+    return [embedding.values for embedding in result.embeddings]

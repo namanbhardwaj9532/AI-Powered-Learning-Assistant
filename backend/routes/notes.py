@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, Form, File, UploadFile, APIRouter
 from config.db import notes_collection
+from config.db import embeddings_collection
 from dependencies.check import get_user
 import os
 from uuid import uuid4
@@ -26,17 +27,14 @@ def all_notes(user=Depends(get_user)):
 def split_text(text, chunk_size=500, overlap=100):
 
     chunks = []
-    embeddings=[]
 
     step = chunk_size - overlap
 
     for i in range(0, len(text), step):
         chunk = text[i:i + chunk_size]
-        embedding=embed(chunk)
-        embeddings.append(embedding)
         chunks.append(chunk)
 
-    return chunks, embeddings
+    return chunks
 
 @router.post("/notes")
 def add_note(
@@ -65,7 +63,7 @@ def add_note(
     for page in reader.pages:
         text += page.extract_text() or ""
 
-    chunks,embeddings=split_text(text)
+    chunks=split_text(text)
     new_note = {
         "user_id": user["_id"],
         "username": user["username"],
@@ -73,11 +71,24 @@ def add_note(
         "content": content,
         "filename": file.filename if file else None,
         "filesavedname": new_name,
-        "chunks":chunks,
-        "embeddings":embeddings
     }
 
-    notes_collection.insert_one(new_note)
+    result=notes_collection.insert_one(new_note)
+    note_id=result.inserted_id
+
+    embeddings=embed(chunks)
+
+    documents = []
+
+    for i, chunk in enumerate(chunks):
+        documents.append({
+            "note_id": note_id,
+            "chunk_index": i,
+            "chunk": chunk,
+            "embedding": embeddings[i]
+        })
+
+    embeddings_collection.insert_many(documents)
 
     notes = list(notes_collection.find({
         "user_id": user["_id"]
