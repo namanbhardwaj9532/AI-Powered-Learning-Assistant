@@ -163,7 +163,7 @@ def noteschatbot(req:chatreq,
         keepdims=True
     )
     similarities = embeddings @ prompt_embedding
-    top_indices = np.argsort(similarities)[-3:][::-1]
+    top_indices = np.argsort(similarities)[-5:][::-1]
 
     top_chunks = []
 
@@ -173,6 +173,38 @@ def noteschatbot(req:chatreq,
             "similarity": float(similarities[index])
         })
 
+    context="\n\n".join(
+        item["chunk"] for item in top_chunks
+    )
+    prompt = f"""
+        You are an intelligent AI assistant helping the user understand their document.
+
+        The document context is provided below. Use it as your primary source of
+        information, but do not simply copy sentences from it.
+
+        You should:
+        - Understand the meaning of the provided context.
+        - Combine information from multiple parts of the context when necessary.
+        - Explain concepts in your own words.
+        - Make reasonable inferences and conclusions when they logically follow
+        from the information in the context.
+        - Answer conceptual "why", "how", and "what does this mean" questions
+        using your understanding of the context.
+        - Give examples when they help explain the answer.
+        - Do not invent facts that contradict the document.
+        - If the document does not provide enough information to answer the
+        question, clearly say what information is missing.
+
+        Document context:
+        {context}
+
+        User question:
+        {req.prompt}
+
+        Provide a clear, useful answer to the user.
+        """
+
+    result=gemini(prompt)
     return {
-        "output":top_chunks
+        "output":result
     }
