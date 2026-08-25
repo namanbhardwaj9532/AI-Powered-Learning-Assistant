@@ -10,7 +10,7 @@ function File() {
 
 
     const [prompt, setPrompt] = useState("");
-    const [output, setOutput] = useState("");
+    const [output, setOutput] = useState([]);
 
     const { note_id } = useParams();
 
@@ -41,10 +41,8 @@ function File() {
             return;
         }
 
-        setOutput("Working...");
-
         const response = await fetch(
-            "http://localhost:8000/chatbot",
+            `http://localhost:8000/${note_id}/chatbot`,
             {
                 method: "POST",
                 credentials: "include",
@@ -88,8 +86,8 @@ function File() {
 
                 <div className="file-content">
                     <p className="note-text">
-                                {notetext}
-                            </p>
+                        {notetext}
+                    </p>
                 </div>
 
             </div>
@@ -110,12 +108,17 @@ function File() {
 
                 <div className="chat-output">
 
-                    {output ? (
-                        <p>{output}</p>
+                    {output.length === 0 ? (
+                        <p>No similar data in the file.</p>
                     ) : (
-                        <p className="chat-placeholder">
-                            Ask something about your document...
-                        </p>
+                        output.map((item, index) => (
+                            <div key={index}>
+                                <p>{item.chunk}</p>
+                                <small>
+                                    Similarity: {item.similarity.toFixed(3)}
+                                </small>
+                            </div>
+                        ))
                     )}
 
                 </div>

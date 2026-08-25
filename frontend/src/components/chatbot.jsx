@@ -2,58 +2,138 @@ import { useState } from "react"
 import "../static/chatbot.css"
 
 function Chatbot() {
-    const [prompt, setprompt] = useState("")
-    const [output, setoutput] = useState("")
+    const [prompt, setPrompt] = useState("")
+    const [messages, setMessages] = useState([])
 
     async function getresponse(e) {
-        e.preventDefault();
-        setoutput("working...")
-        const response = await fetch("http://localhost:8000/chatbot", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "prompt": prompt
+        e.preventDefault()
+
+        if (!prompt.trim()) return
+
+        const userMessage = prompt
+        setPrompt("")
+
+        // Add user message
+        setMessages((prev) => [
+            ...prev,
+            {
+                sender: "user",
+                text: userMessage
+            }
+        ])
+
+        // Loading message
+        setMessages((prev) => [
+            ...prev,
+            {
+                sender: "ai",
+                text: "Thinking..."
+            }
+        ])
+
+        try {
+            const response = await fetch("http://localhost:8000/chatbot", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    prompt: userMessage
+                })
             })
-        })
-        const data = await response.json()
-        setoutput(data.output)
+
+            const data = await response.json()
+
+            // Replace "Thinking..." with actual response
+            setMessages((prev) => [
+                ...prev.slice(0, -1),
+                {
+                    sender: "ai",
+                    text: data.output
+                }
+            ])
+        } catch (error) {
+            setMessages((prev) => [
+                ...prev.slice(0, -1),
+                {
+                    sender: "ai",
+                    text: "Something went wrong. Please try again."
+                }
+            ])
+        }
     }
 
     return (
-        <div>
-            <form className="chat-form" onSubmit={getresponse}>
+        <div className="chatbot-container">
 
-                <div className="chat-header">
-                    <h2>AI Assistant</h2>
-                    <p>Ask me anything</p>
+            <div className="chatbot">
+
+                {/* Header */}
+                <div className="chatbot-header">
+                    <div className="ai-icon">
+                        AI
+                    </div>
+
+                    <div>
+                        <h2>AI Assistant</h2>
+                        <span>Online</span>
+                    </div>
                 </div>
 
-                <div className="chat-output">
-                    <textarea
-                        placeholder="AI response will appear here..."
-                        value={output}
-                        readOnly
-                    />
+                {/* Messages */}
+                <div className="chat-messages">
+
+                    {messages.length === 0 && (
+                        <div className="welcome-message">
+                            <div className="welcome-icon">AI</div>
+                            <h3>How can I help you?</h3>
+                            <p>
+                                Ask me anything and I'll try to help.
+                            </p>
+                        </div>
+                    )}
+
+                    {messages.map((message, index) => (
+                        <div
+                            key={index}
+                            className={`message-row ${message.sender}`}
+                        >
+                            {message.sender === "ai" && (
+                                <div className="message-icon">
+                                    AI
+                                </div>
+                            )}
+
+                            <div className="message">
+                                {message.text}
+                            </div>
+                        </div>
+                    ))}
+
                 </div>
 
-                <div className="chat-input">
+                {/* Input */}
+                <form
+                    className="chat-input-container"
+                    onSubmit={getresponse}
+                >
                     <input
                         type="text"
-                        placeholder="Write your prompt..."
+                        placeholder="Message AI Assistant..."
                         value={prompt}
-                        onChange={(e) => setprompt(e.target.value)}
+                        onChange={(e) => setPrompt(e.target.value)}
                     />
 
                     <button type="submit">
-                        Send
+                        ↑
                     </button>
-                </div>
+                </form>
 
-            </form>
+            </div>
+
         </div>
     )
 }
+
 export default Chatbot

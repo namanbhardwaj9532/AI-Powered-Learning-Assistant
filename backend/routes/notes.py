@@ -8,6 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from bson import ObjectId
 from pypdf import PdfReader
 from config.gemini import embed
+from pydantic import BaseModel
+from config.gemini import gemini
+import numpy as np
 
 router=APIRouter()
 
@@ -125,4 +128,51 @@ def get_note(note_id: str):
         "filename": note["filename"],
         "text": text,
         "tolpages":tolpage
+    }
+
+
+
+class chatreq(BaseModel):
+    prompt:str
+
+@router.post("/{note_id}/chatbot")
+def noteschatbot(req:chatreq,
+                 note_id:str):
+    prompt_embedding= np.array(
+        embed(req.prompt)[0],
+        dtype=np.float32
+    )
+    documents=list(embeddings_collection.find({
+        "note_id":ObjectId(note_id)
+    })
+    )
+    if not documents:
+        return {
+            "output": "No content found in this note."
+        }
+
+    embeddings= np.array(
+        [doc["embedding"] for doc in documents],
+        dtype=np.float32
+    )
+    results=[]
+    prompt_embedding/=np.linalg.norm(prompt_embedding)
+    embeddings /= np.linalg.norm(
+        embeddings,
+        axis=1,
+        keepdims=True
+    )
+    similarities = embeddings @ prompt_embedding
+    top_indices = np.argsort(similarities)[-3:][::-1]
+
+    top_chunks = []
+
+    for index in top_indices:
+        top_chunks.append({
+            "chunk": documents[index]["chunk"],
+            "similarity": float(similarities[index])
+        })
+
+    return {
+        "output":top_chunks
     }
