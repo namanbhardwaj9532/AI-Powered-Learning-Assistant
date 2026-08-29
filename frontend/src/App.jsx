@@ -5,6 +5,7 @@ import Main from "./components/main";
 import Notes from "./components/notes";
 import Chatbot from "./components/chatbot";
 import File from "./components/file";
+import Test from "./components/test"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App(){
 
@@ -19,6 +20,7 @@ function App(){
         <Route path="/notes" element={<Notes />}></Route>
         <Route path="/file/:note_id" element={<File />}></Route>
         <Route path="/chatbot" element={<Chatbot />}></Route>
+        <Route path="/test/:note_id" element={<Test />}></Route>
       </Routes>
       </BrowserRouter>
     </div>

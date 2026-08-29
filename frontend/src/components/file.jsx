@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../static/file.css";
 
@@ -14,6 +14,7 @@ function File() {
 
     const { note_id } = useParams();
 
+    const navigate=useNavigate();
     useEffect(() => {
         async function getNote() {
             const response = await fetch(
@@ -34,6 +35,9 @@ function File() {
         getNote();
     }, [note_id]);
 
+    async function  test(){
+        navigate(`/test/${note_id}`)
+    }
     async function getResponse(e) {
         e.preventDefault();
 
@@ -85,11 +89,13 @@ function File() {
                         Total pages: {tol}
                     </span>
                 </div>
-
+                <div>
+                    <button class="test-btn" onClick={test}>test</button>
+                </div>
                 <div className="file-content">
                     <p className="note-text">
-                                {notetext}
-                            </p>
+                        {notetext}
+                    </p>
                 </div>
 
             </div>

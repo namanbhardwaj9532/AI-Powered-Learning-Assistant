@@ -56,6 +56,20 @@
     border-bottom: 1px solid #ddd;
 }
 
+.test-btn {
+    background-color: #e53935;
+    color: white;
+    font-size: 18px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.test-btn:hover {
+    background-color: #c62828;
+}
+
 
 
 .chat-panel {
@@ -192,3 +206,4 @@
         height: 500px;
     }
 }
+

@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, Form, File, UploadFile
 from routes.auth import router as auth_router
 from routes.main import router as main_router
 from routes.notes import router as notes_router
+from routes.chatbot import router as chatbot_router
 from pydantic import BaseModel
 from config.db import notes_collection
 from dependencies.check import get_user
@@ -11,6 +12,7 @@ from uuid import uuid4
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
 from config.gemini import gemini
+from config.groq import groq
 
 
 app=FastAPI()
@@ -34,14 +36,41 @@ def server():
 app.include_router(auth_router)
 app.include_router(main_router)
 app.include_router(notes_router)
+app.include_router(chatbot_router)
 
+app.mount("/uploads",StaticFiles(directory="uploads"),name="uploads")
 
-class chatreq(BaseModel):
-    prompt:str
+@app.get("/{note_id}/test")
+def test(note_id: str):
 
-@app.post("/chatbot")
-def chatbot(req:chatreq):
-    result=gemini(req.prompt)
+    object_id = ObjectId(note_id)
+
+    note = notes_collection.find_one({
+        "_id": object_id
+    })
+
+    if not note:
+        return {
+            "output": "Note not found."
+        }
+
+    content = note["text"]
+
+    prompt = f"""
+From the given text, create 5 simple questions.
+
+Rules:
+- Questions must be based only on the given text.
+- Keep the questions simple.
+- Return only the questions.
+- Number them from 1 to 5.
+
+Text:
+{content}
+"""
+
+    result = groq(prompt)
+
     return {
-        "output":result
+        "output": result
     }
