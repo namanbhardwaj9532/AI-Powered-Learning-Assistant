@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 function Test() {
     const [questions, setQuestions] = useState([]);
     const { note_id } = useParams();
+    const [answers, setanswers] = useState({})
+    const [submitted, setsubmitted] = useState(false)
+    const [result, setresult] = useState(null)
+
+    useEffect(() => {
+        quiz()
+    }, [note_id]);
 
     async function quiz(e) {
-        e.preventDefault();
-
         try {
             const response = await fetch(
                 `http://localhost:8000/${note_id}/test`,
@@ -25,19 +30,48 @@ function Test() {
         }
     }
 
+    function handleanswers(questionid, answer) {
+        setanswers(prev => ({
+            ...prev,
+            [questionid]: answer
+        }));
+    }
+
+    async function submitquiz(e) {
+        try {
+            const response = await fetch(
+                `http://localhost:8000/${note_id}/test/submit`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        answers: answers
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            setresult(data);
+            setsubmitted(true);
+
+        } catch (error) {
+            console.error("Submit error:", error);
+        }
+    }
+
     return (
         <div>
             <h1>QUIZ</h1>
 
-            <button onClick={quiz}>
-                Start
-            </button>
-
             <div>
-                {questions.map((item, index) => (
-                    <div key={index}>
+                {questions.map((item) => (
+                    <div key={item.id}>
                         <h3>
-                            {index + 1}. {item.question}
+                            {item.id}. {item.question}
                         </h3>
 
                         {item.options.map((option, optionIndex) => (
@@ -45,7 +79,8 @@ function Test() {
                                 <label>
                                     <input
                                         type="radio"
-                                        name={`question-${index}`}
+                                        name={`question-${item.id}`}
+                                        onChange={() => handleanswers(item.id, option)}
                                     />
                                     {option}
                                 </label>
@@ -53,7 +88,16 @@ function Test() {
                         ))}
                     </div>
                 ))}
+                <br></br>
+                <button onClick={submitquiz}>submit</button>
             </div>
+            {submitted && result && (
+                <div>
+                    <h2>
+                        Score: {result.score}/{result.total}
+                    </h2>
+                </div>
+            )}
         </div>
     );
 }

@@ -14,3 +14,5 @@ db2=conn["notes_db"]
 notes_collection=db2["notes"]
 
 embeddings_collection=db2["embeddings"]
+
+quiz_collection=db2["quiz"]
