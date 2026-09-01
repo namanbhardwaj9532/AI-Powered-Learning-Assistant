@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../static/Notes.css";
+import Navbar from "./navbar"
 
 function Notes() {
     const [title, setTitle] = useState("");
@@ -30,12 +31,15 @@ function Notes() {
 
     async function addNote(e) {
         e.preventDefault();
-        const formdata = new FormData()
+
+        const formdata = new FormData();
         formdata.append("title", title);
         formdata.append("content", content);
+
         if (file) {
             formdata.append("file", file);
         }
+
         const response = await fetch("http://localhost:8000/notes", {
             method: "POST",
             credentials: "include",
@@ -56,67 +60,121 @@ function Notes() {
         setNotes(updatedNotes);
         setTitle("");
         setContent("");
-
+        setFile(null);
     }
 
     return (
-        <div className="notes-page">
+        <div>
+            <Navbar />
+            <div className="notes-page">
 
-            <h1>My Notes</h1>
+                <div className="notes-container">
 
-            <form className="note-form" onSubmit={addNote}>
+                    <h1>My Notes</h1>
+                    <p className="subtitle">
+                        Upload and manage your study notes
+                    </p>
 
-                <label>Title</label>
-                <input
-                    type="text"
-                    placeholder="Enter note title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+                    <form className="note-form" onSubmit={addNote}>
 
-                <label>Description</label>
-                <textarea
-                    placeholder="Add a short description..."
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-                <input
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                />
+                        <label>Title</label>
 
-                <button type="submit">
-                    Add Note
-                </button>
+                        <input
+                            type="text"
+                            placeholder="Enter note title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
 
-            </form>
+                        <label>Description</label>
 
-            <div className="notes-list">
+                        <textarea
+                            placeholder="Add a short description..."
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                        />
 
-                <h2>Your Notes</h2>
+                        <label>PDF File</label>
 
-                {notes.length === 0 ? (
-                    <p>No notes yet.</p>
-                ) : (
-                    notes.map((note) => (
-                        <div className="note" key={note._id} onClick={()=>navigate(`/file/${note._id}`)}>
-                            <h3>{note.title}</h3>
-                            <p>{note.content}</p>
-                            <a
-                                href={`http://localhost:8000/uploads/${note.filesavedname}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                {note.filename}
-                            </a>
+                        <input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => setFile(e.target.files[0])}
+                        />
+
+                        {file && (
+                            <p className="selected-file">
+                                Selected: {file.name}
+                            </p>
+                        )}
+
+                        <button type="submit">
+                            Add Note
+                        </button>
+
+                    </form>
+
+
+                    <div className="notes-list">
+
+                        <div className="notes-list-header">
+                            <h2>Your Notes</h2>
+                            <span>{notes.length} notes</span>
                         </div>
-                    ))
-                )}
+
+                        {notes.length === 0 ? (
+                            <div className="empty-notes">
+                                <p>No notes yet.</p>
+                                <span>Upload your first note above.</span>
+                            </div>
+                        ) : (
+                            <div className="notes-grid">
+
+                                {notes.map((note) => (
+
+                                    <div
+                                        className="note"
+                                        key={note._id}
+                                        onClick={() =>
+                                            navigate(`/file/${note._id}`)
+                                        }
+                                    >
+
+                                        <div className="note-icon">
+                                            PDF
+                                        </div>
+
+                                        <h3>{note.title}</h3>
+
+                                        <p>
+                                            {note.content ||
+                                                "No description available."}
+                                        </p>
+
+                                        <a
+                                            href={`http://localhost:8000/uploads/${note.filesavedname}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) =>
+                                                e.stopPropagation()
+                                            }
+                                        >
+                                            {note.filename}
+                                        </a>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+                        )}
+
+                    </div>
+
+                </div>
 
             </div>
-
-        </div>
+        </div> 
     );
 }
 

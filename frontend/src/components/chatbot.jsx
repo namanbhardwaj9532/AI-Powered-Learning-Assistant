@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "../static/chatbot.css"
+import Navbar from "./navbar"
 
 function Chatbot() {
     const [prompt, setPrompt] = useState("")
@@ -65,73 +66,75 @@ function Chatbot() {
     }
 
     return (
-        <div className="chatbot-container">
+        <div>
+            <Navbar />
+            <div className="chatbot-container">
+                <div className="chatbot">
 
-            <div className="chatbot">
-
-                {/* Header */}
-                <div className="chatbot-header">
-                    <div className="ai-icon">
-                        AI
-                    </div>
-
-                    <div>
-                        <h2>AI Assistant</h2>
-                        <span>Online</span>
-                    </div>
-                </div>
-
-                {/* Messages */}
-                <div className="chat-messages">
-
-                    {messages.length === 0 && (
-                        <div className="welcome-message">
-                            <div className="welcome-icon">AI</div>
-                            <h3>How can I help you?</h3>
-                            <p>
-                                Ask me anything and I'll try to help.
-                            </p>
+                    {/* Header */}
+                    <div className="chatbot-header">
+                        <div className="ai-icon">
+                            AI
                         </div>
-                    )}
 
-                    {messages.map((message, index) => (
-                        <div
-                            key={index}
-                            className={`message-row ${message.sender}`}
-                        >
-                            {message.sender === "ai" && (
-                                <div className="message-icon">
-                                    AI
-                                </div>
-                            )}
+                        <div>
+                            <h2>AI Assistant</h2>
+                            <span>Online</span>
+                        </div>
+                    </div>
 
-                            <div className="message">
-                                {message.text}
+                    {/* Messages */}
+                    <div className="chat-messages">
+
+                        {messages.length === 0 && (
+                            <div className="welcome-message">
+                                <div className="welcome-icon">AI</div>
+                                <h3>How can I help you?</h3>
+                                <p>
+                                    Ask me anything and I'll try to help.
+                                </p>
                             </div>
-                        </div>
-                    ))}
+                        )}
+
+                        {messages.map((message, index) => (
+                            <div
+                                key={index}
+                                className={`message-row ${message.sender}`}
+                            >
+                                {message.sender === "ai" && (
+                                    <div className="message-icon">
+                                        AI
+                                    </div>
+                                )}
+
+                                <div className="message">
+                                    {message.text}
+                                </div>
+                            </div>
+                        ))}
+
+                    </div>
+
+                    {/* Input */}
+                    <form
+                        className="chat-input-container"
+                        onSubmit={getresponse}
+                    >
+                        <input
+                            type="text"
+                            placeholder="Message AI Assistant..."
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                        />
+
+                        <button type="submit">
+                            ↑
+                        </button>
+                    </form>
 
                 </div>
-
-                {/* Input */}
-                <form
-                    className="chat-input-container"
-                    onSubmit={getresponse}
-                >
-                    <input
-                        type="text"
-                        placeholder="Message AI Assistant..."
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                    />
-
-                    <button type="submit">
-                        ↑
-                    </button>
-                </form>
 
             </div>
-
         </div>
     )
 }

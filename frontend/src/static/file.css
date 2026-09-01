@@ -1,15 +1,20 @@
 .file-page {
     display: flex;
-    gap: 30px;
+    gap: 24px;
 
     max-width: 1400px;
-    margin: 40px auto;
+    margin: 30px auto;
 
     padding: 0 30px;
 
     align-items: flex-start;
+
+    background: #111111;
+    color: #ffffff;
 }
 
+
+/* ================= FILE ================= */
 
 .file-container {
     flex: 2;
@@ -18,59 +23,78 @@
 
 .file-header {
     padding-bottom: 20px;
-    border-bottom: 1px solid #ddd;
+
+    border-bottom: 1px solid #2d2d2d;
 }
 
 .file-header h1 {
-    margin: 0 0 10px 0;
-    font-size: 32px;
+    margin: 0 0 8px 0;
+
+    font-size: 30px;
+    font-weight: 600;
+
+    color: #ffffff;
 }
 
 .file-name {
-    color: #666;
+    color: #999999;
     font-size: 14px;
 }
 
+
+/* ================= CONTENT ================= */
+
 .file-content {
-    margin-top: 30px;
+    margin-top: 24px;
 
-    padding: 25px;
+    padding: 24px;
 
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
 
-    background-color: #fff;
+    background: #1a1a1a;
 }
 
 .note-text {
     margin: 0 0 20px 0;
     padding: 15px;
+
     white-space: pre-wrap;
 
     line-height: 1.6;
+    font-size: 15px;
 
-    font-size: 16px;
+    color: #dddddd;
 
-    color: #222;
-
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #2d2d2d;
 }
 
+
+/* ================= TEST BUTTON ================= */
+
 .test-btn {
-    background-color: #e53935;
-    color: white;
-    font-size: 18px;
-    padding: 12px 24px;
+    background: #ffffff;
+    color: #111111;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    padding: 11px 20px;
+
     border: none;
     border-radius: 8px;
+
     cursor: pointer;
+
+    transition: 0.2s;
 }
 
 .test-btn:hover {
-    background-color: #c62828;
+    background: #dddddd;
 }
 
 
+/* ================= CHAT PANEL ================= */
 
 .chat-panel {
     flex: 1;
@@ -86,38 +110,42 @@
     display: flex;
     flex-direction: column;
 
-    border: 1px solid #ddd;
+    border: 1px solid #2d2d2d;
     border-radius: 12px;
 
-    background-color: #fff;
+    background: #1a1a1a;
 
     overflow: hidden;
 }
 
 
-
+/* ================= CHAT HEADER ================= */
 
 .chat-header {
-    padding: 20px;
+    padding: 18px 20px;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #2d2d2d;
 }
 
 .chat-header h2 {
     margin: 0;
-    font-size: 22px;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #ffffff;
 }
 
 .chat-header p {
-    margin: 6px 0 0;
+    margin: 5px 0 0;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    color: #777;
+    color: #999999;
 }
 
 
-
+/* ================= CHAT OUTPUT ================= */
 
 .chat-output {
     flex: 1;
@@ -126,9 +154,11 @@
 
     overflow-y: auto;
 
-    font-size: 15px;
+    font-size: 14px;
 
     line-height: 1.6;
+
+    color: #dddddd;
 }
 
 .chat-output p {
@@ -136,20 +166,22 @@
 }
 
 .chat-placeholder {
-    color: #999;
+    color: #777777;
 }
 
 
-
+/* ================= CHAT INPUT ================= */
 
 .chat-input {
     display: flex;
 
     gap: 8px;
 
-    padding: 15px;
+    padding: 14px;
 
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #2d2d2d;
+
+    background: #1a1a1a;
 }
 
 .chat-input input {
@@ -159,38 +191,72 @@
 
     padding: 11px 12px;
 
-    border: 1px solid #ccc;
-
-    border-radius: 7px;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
 
     outline: none;
 
     font-size: 14px;
+
+    background: #111111;
+    color: #ffffff;
+}
+
+.chat-input input::placeholder {
+    color: #777777;
 }
 
 .chat-input input:focus {
-    border-color: #555;
+    border-color: #777777;
 }
 
 .chat-input button {
     padding: 11px 18px;
 
     border: none;
+    border-radius: 8px;
 
-    border-radius: 7px;
+    background: #ffffff;
+    color: #111111;
 
     cursor: pointer;
 
     font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.chat-input button:hover {
+    background: #dddddd;
 }
 
 
+/* ================= SCROLLBAR ================= */
 
+.chat-output::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-output::-webkit-scrollbar-thumb {
+    background: #444444;
+    border-radius: 10px;
+}
+
+.chat-output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* ================= MOBILE ================= */
 
 @media (max-width: 900px) {
 
     .file-page {
         flex-direction: column;
+
+        margin: 25px auto;
+        padding: 0 20px;
     }
 
     .file-container {
@@ -207,3 +273,17 @@
     }
 }
 
+@media (max-width: 600px) {
+
+    .file-page {
+        padding: 0 15px;
+    }
+
+    .file-content {
+        padding: 18px;
+    }
+
+    .file-header h1 {
+        font-size: 25px;
+    }
+}

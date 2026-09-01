@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../static/Main.css";
+import Navbar from "./navbar";
 
 function Main() {
     const [loading, setLoading] = useState(true);
@@ -9,6 +10,7 @@ function Main() {
     const [email, setemail] = useState("");
     const [id, setid] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
+    const [notes, setnotes] = useState([]);
 
     const navigate = useNavigate();
 
@@ -29,6 +31,7 @@ function Main() {
             setid(data.uid);
             setusername(data.username);
             setemail(data.email);
+            setnotes(data.notes);
 
             setAuthenticated(true);
             setLoading(false);
@@ -56,15 +59,9 @@ function Main() {
 
     return (
         <div>
+            <Navbar />
             <div className="dashboard">
 
-                <header className="dashboard-header">
-                    <h1>Dashboard</h1>
-
-                    <button className="logout-btn" onClick={logout}>
-                        Logout
-                    </button>
-                </header>
 
                 <div className="profile-card">
 
@@ -104,23 +101,26 @@ function Main() {
                     </div>
 
                 </div>
-                <Link to="/notes" className="notes-card">
-                    <div className="notes-icon">📝</div>
 
-                    <div>
-                        <h2>My Notes</h2>
-                    </div>
+                {notes.length === 0 ? (
+                    <p>No notes yet.</p>
+                ) : (
+                    notes.map((note) => (
+                        <div className="notes-card" key={note._id} onClick={() => navigate(`/file/${note._id}`)}>
+                            <h3>{note.title}</h3>
+                            <p>{note.content}</p>
+                            <a
+                                href={`http://localhost:8000/uploads/${note.filesavedname}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {note.filename}
+                            </a>
+                        </div>
+                    ))
+                )}
 
-                    <span className="notes-arrow">→</span>
-                </Link>
-                <Link to="/chatbot" className="notes-card">
-
-                    <div>
-                        <h2>chatbot</h2>
-                    </div>
-
-                    <span className="notes-arrow">→</span>
-                </Link>
             </div>
         </div>
     );
