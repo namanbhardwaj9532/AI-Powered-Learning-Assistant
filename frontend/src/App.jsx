@@ -6,6 +6,7 @@ import Notes from "./components/notes";
 import Chatbot from "./components/chatbot";
 import File from "./components/file";
 import Test from "./components/test"
+import Flashcards from "./components/flashcards";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App(){
 
@@ -21,6 +22,7 @@ function App(){
         <Route path="/file/:note_id" element={<File />}></Route>
         <Route path="/chatbot" element={<Chatbot />}></Route>
         <Route path="/test/:note_id" element={<Test />}></Route>
+        <Route path="/flashcards/:note_id" element={<Flashcards />}></Route>
       </Routes>
       </BrowserRouter>
     </div>

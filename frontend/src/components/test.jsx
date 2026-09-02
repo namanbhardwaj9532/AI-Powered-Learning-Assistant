@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import "../static/Test.css";
 
 function Test() {
     const [questions, setQuestions] = useState([]);
     const { note_id } = useParams();
-    const [answers, setanswers] = useState({})
-    const [submitted, setsubmitted] = useState(false)
-    const [result, setresult] = useState(null)
+    const [answers, setanswers] = useState({});
+    const [submitted, setsubmitted] = useState(false);
+    const [result, setresult] = useState(null);
 
     useEffect(() => {
-        quiz()
+        quiz();
     }, [note_id]);
 
-    async function quiz(e) {
+    async function quiz() {
         try {
             const response = await fetch(
                 `http://localhost:8000/${note_id}/test`,
@@ -37,7 +38,7 @@ function Test() {
         }));
     }
 
-    async function submitquiz(e) {
+    async function submitquiz() {
         try {
             const response = await fetch(
                 `http://localhost:8000/${note_id}/test/submit`,
@@ -64,40 +65,95 @@ function Test() {
     }
 
     return (
-        <div>
-            <h1>QUIZ</h1>
+        <div className="test-page">
 
-            <div>
-                {questions.map((item) => (
-                    <div key={item.id}>
-                        <h3>
-                            {item.id}. {item.question}
-                        </h3>
+            <div className="test-container">
 
-                        {item.options.map((option, optionIndex) => (
-                            <div key={optionIndex}>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name={`question-${item.id}`}
-                                        onChange={() => handleanswers(item.id, option)}
-                                    />
-                                    {option}
-                                </label>
+                <header className="test-header">
+                    <h1>Quiz</h1>
+                    <p>Test your understanding of the notes.</p>
+                </header>
+
+                {!submitted && (
+                    <div className="questions">
+
+                        {questions.map((item) => (
+                            <div className="question-card" key={item.id}>
+
+                                <h3>
+                                    <span>{item.id}</span>
+                                    {item.question}
+                                </h3>
+
+                                <div className="options">
+
+                                    {item.options.map((option, optionIndex) => (
+                                        <label
+                                            className="option"
+                                            key={optionIndex}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name={`question-${item.id}`}
+                                                onChange={() =>
+                                                    handleanswers(
+                                                        item.id,
+                                                        option
+                                                    )
+                                                }
+                                            />
+
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+
+                                </div>
+
                             </div>
                         ))}
+
+                        {questions.length > 0 && (
+                            <button
+                                className="submit-btn"
+                                onClick={submitquiz}
+                            >
+                                Submit Quiz
+                            </button>
+                        )}
+
                     </div>
-                ))}
-                <br></br>
-                <button onClick={submitquiz}>submit</button>
+                )}
+
+                {submitted && result && (
+                    <div className="result-card">
+
+                        <div className="result-score">
+                            {result.score}
+                            <span>/{result.total}</span>
+                        </div>
+
+                        <h2>Quiz Completed</h2>
+
+                        <p>
+                            You answered {result.score} out of{" "}
+                            {result.total} questions correctly.
+                        </p>
+
+                        <button
+                            className="submit-btn"
+                            onClick={() => {
+                                setsubmitted(false);
+                                setresult(null);
+                            }}
+                        >
+                            Review Answers
+                        </button>
+
+                    </div>
+                )}
+
             </div>
-            {submitted && result && (
-                <div>
-                    <h2>
-                        Score: {result.score}/{result.total}
-                    </h2>
-                </div>
-            )}
+
         </div>
     );
 }

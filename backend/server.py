@@ -3,6 +3,7 @@ from routes.auth import router as auth_router
 from routes.main import router as main_router
 from routes.notes import router as notes_router
 from routes.chatbot import router as chatbot_router
+from routes.test import router as test_router
 from pydantic import BaseModel
 from config.db import notes_collection
 from config.db import embeddings_collection
@@ -40,178 +41,62 @@ app.include_router(auth_router)
 app.include_router(main_router)
 app.include_router(notes_router)
 app.include_router(chatbot_router)
+app.include_router(test_router)
 
-app.mount("/uploads",StaticFiles(directory="uploads"),name="uploads")
-
-@app.get("/{note_id}/test")
-def test(note_id: str):
-
-    object_id = ObjectId(note_id)
-
-    quiz=quiz_collection.find_one({
-        "note_id":object_id
-    })
-
-    if quiz:
-        questions = []
-
-        for question in quiz["questions"]:
-            questions.append({
-                "id": question["id"],
-                "question": question["question"],
-                "options": question["options"]
-            })
-
-        return {
-            "questions": questions
-        }
-
-    document= list(
-        embeddings_collection.find({
-            "note_id":object_id
-        })
-    )
-
-    selected_chunks = random.sample(
-        document,
-        min(10,len(document))
-    )
-
-    content ="\n\n".join(
-        doc["chunk"] for doc in selected_chunks
-    )
-
+def extract_keywords(content):
     prompt = f"""
-From the given text, create 5 simple questions.
+Extract the most important keywords and key concepts from the following study material.
 
 Rules:
-- provide MCQ-type questions
-- Questions must be based only on the given text.
-- Keep the questions simple.
-- Return exactly 5 questions.
-- Provide 4 options for each question.
-- Provide the correct answer for each question.
-- The correct answer must be exactly one of the four options.
+- Extract only meaningful keywords or concepts.
+- Focus on important technical terms, concepts, topics, names, methods, and definitions.
+- Do not extract common or generic words.
+- Do not include complete sentences.
+- Do not include duplicate or closely repeated keywords.
+- Keywords must be directly related to the given text.
+- Return between 5 and 15 keywords depending on the amount of useful information.
 - Return only valid JSON.
-- Do not include markdown or extra text.
+- Do not include markdown or any extra text.
 
 Format:
 
-[
 {{
-"id": 1,
-"question": "Question 1",
-"options": [
-"Option 1",
-"Option 2",
-"Option 3",
-"Option 4"
-],
-"correct_answer": "Option 2"
-}},
-{{
-"id": 2,
-"question": "Question 2",
-"options": [
-"Option 1",
-"Option 2",
-"Option 3",
-"Option 4"
-],
-"correct_answer": "Option 1"
-}},
-{{
-"id": 3,
-"question": "Question 3",
-"options": [
-"Option 1",
-"Option 2",
-"Option 3",
-"Option 4"
-],
-"correct_answer": "Option 4"
-}},
-{{
-"id": 4,
-"question": "Question 4",
-"options": [
-"Option 1",
-"Option 2",
-"Option 3",
-"Option 4"
-],
-"correct_answer": "Option 3"
-}},
-{{
-"id": 5,
-"question": "Question 5",
-"options": [
-"Option 1",
-"Option 2",
-"Option 3",
-"Option 4"
-],
-"correct_answer": "Option 1"
+    "keywords": [
+        "keyword 1",
+        "keyword 2",
+        "keyword 3"
+    ]
 }}
-]
 
 Text:
 {content}
 """
 
-    result = groq(prompt)
-    questions=json.loads(result)
-    quiz = {
-        "note_id": object_id,
-        "questions": questions
-    }
-    quiz_collection.insert_one(quiz)
+    result=groq(prompt)
+    return json.loads(result)["keywords"]
 
-    questions_for_frontend = []
 
-    for question in questions:
-        questions_for_frontend.append({
-            "id": question["id"],
-            "question": question["question"],
-            "options": question["options"]
+@app.get("/{note_id}/flashcards")
+def flashcards(note_id:str):
+    object_id=ObjectId(note_id)
+    document=list(
+        embeddings_collection.find({
+            "note_id":object_id
         })
+    )
+
+    all_keywords=[]
+
+    for i in range(0,len(document),10):
+        batch=document[i:i+10]
+        content="\n\n".join(
+            doc["chunk"] for doc in batch
+        )
+
+        result = extract_keywords(content)
+
+        all_keywords.extend(result)
 
     return {
-        "questions": questions_for_frontend
-    }
-
-class quizanswers(BaseModel):
-    answers:dict
-
-@app.post("/{note_id}/test/submit")
-def quizsubmission(
-    note_id: str,
-    submission: quizanswers
-):
-    objectid = ObjectId(note_id)
-
-    quiz = quiz_collection.find_one({
-        "note_id": objectid
-    })
-
-    if not quiz:
-        return {
-            "message": "Quiz not found"
-        }
-
-    score = 0
-
-    for question in quiz["questions"]:
-        q_id = str(question["id"])
-
-        correctanswer = question["correct_answer"]
-
-        answer = submission.answers.get(q_id)
-
-        if answer == correctanswer:
-            score += 1
-
-    return {
-        "score": score,
-        "total": len(quiz["questions"])
+        "keywords":all_keywords
     }

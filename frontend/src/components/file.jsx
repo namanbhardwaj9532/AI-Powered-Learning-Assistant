@@ -91,6 +91,7 @@ function File() {
                 </div>
                 <div>
                     <button class="test-btn" onClick={test}>test</button>
+                    <button class="test-btn" onClick={()=>(navigate(`/flashcards/${note_id}`))}>flashcards</button>
                 </div>
                 <div className="file-content">
                     <p className="note-text">
