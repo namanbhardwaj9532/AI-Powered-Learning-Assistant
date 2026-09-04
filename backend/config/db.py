@@ -16,3 +16,5 @@ notes_collection=db2["notes"]
 embeddings_collection=db2["embeddings"]
 
 quiz_collection=db2["quiz"]
+
+flashcards_collection=db2["flashcards"]

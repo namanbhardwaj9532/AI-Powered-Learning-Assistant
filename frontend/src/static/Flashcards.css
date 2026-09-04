@@ -1,3 +1,221 @@
-.flashcards {
+* {
+    box-sizing: border-box;
+}
+
+.flashcards-page {
+    min-height: 100vh;
+    background: #111111;
     color: white;
+
+    padding: 50px 30px;
+
+    text-align: center;
+}
+
+.flashcards-page h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.flashcards-subtitle {
+    margin: 8px 0 35px;
+    color: #999;
+}
+
+
+/* ================= CARD AREA ================= */
+
+.flashcards-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 25px;
+
+    width: 100%;
+    max-width: 950px;
+
+    margin: auto;
+}
+
+
+/* ================= CARD ================= */
+
+.flashcard-container {
+    width: 600px;
+    height: 360px;
+
+    perspective: 1000px;
+
+    cursor: pointer;
+}
+
+.flashcard {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    transition: transform 0.6s;
+
+    transform-style: preserve-3d;
+}
+
+.flashcard-container.flipped .flashcard {
+    transform: rotateY(180deg);
+}
+
+
+/* ================= CARD SIDES ================= */
+
+.flashcard-side {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px;
+
+    border-radius: 18px;
+
+    background: #1b1b1b;
+
+    border: 1px solid #333;
+
+    backface-visibility: hidden;
+}
+
+.flashcard-front {
+    transform: rotateY(0deg);
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+}
+
+
+/* ================= TEXT ================= */
+
+.card-label {
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #999;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 20px;
+}
+
+.flashcard-side h2 {
+    max-width: 500px;
+
+    margin: 0;
+
+    font-size: 25px;
+    line-height: 1.5;
+}
+
+.flashcard-back p:not(.flip-hint) {
+    max-width: 500px;
+
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 1.6;
+
+    color: #ddd;
+}
+
+.flip-hint {
+    margin-top: 30px;
+
+    font-size: 12px;
+
+    color: #777;
+}
+
+
+/* ================= ARROWS ================= */
+
+.flashcard-arrow {
+    width: 45px;
+    height: 45px;
+
+    border: 1px solid #444;
+    border-radius: 50%;
+
+    background: #1b1b1b;
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.flashcard-arrow:hover:not(:disabled) {
+    background: #333;
+    border-color: #666;
+}
+
+.flashcard-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+
+/* ================= COUNTER ================= */
+
+.flashcard-counter {
+    margin-top: 20px;
+
+    color: #888;
+
+    font-size: 13px;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    .flashcards-page {
+        padding: 40px 15px;
+    }
+
+    .flashcards-wrapper {
+        gap: 10px;
+    }
+
+    .flashcard-container {
+        width: 100%;
+        max-width: 500px;
+        height: 330px;
+    }
+
+    .flashcard-side {
+        padding: 25px;
+    }
+
+    .flashcard-side h2 {
+        font-size: 20px;
+    }
+
+    .flashcard-back p:not(.flip-hint) {
+        font-size: 16px;
+    }
+
+    .flashcard-arrow {
+        width: 38px;
+        height: 38px;
+
+        font-size: 18px;
+    }
 }

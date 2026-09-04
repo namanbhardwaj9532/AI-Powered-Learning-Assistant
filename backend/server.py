@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from config.db import notes_collection
 from config.db import embeddings_collection
 from config.db import quiz_collection
+from config.db import flashcards_collection
 from dependencies.check import get_user
 import os
 from bson import ObjectId
@@ -76,16 +77,67 @@ Text:
     return json.loads(result)["keywords"]
 
 
+def produce_flashcard(keywords, content):
+
+    prompt = f"""
+Create flashcards from the following study material.
+
+Keywords:
+{keywords}
+
+Rules:
+- Generate flashcards based only on the provided study material.
+- Use the keywords to identify important concepts.
+- The answers must come from the provided study material.
+- Do not add information that is not present in the study material.
+- Keep questions clear and suitable for revision.
+- Keep answers concise but informative.
+- Do not create duplicate flashcards.
+- Return only valid JSON.
+- Do not include markdown or extra text.
+
+Format:
+
+{{
+    "flashcards": [
+        {{
+            "question": "Question here",
+            "answer": "Answer here"
+        }},
+        {{
+            "question": "Question here",
+            "answer": "Answer here"
+        }}
+    ]
+}}
+
+Study Material:
+{content}
+"""
+
+    result = groq(prompt)
+
+    return json.loads(result)["flashcards"]
+
 @app.get("/{note_id}/flashcards")
 def flashcards(note_id:str):
     object_id=ObjectId(note_id)
+
+    saved_flashcards=flashcards_collection.find_one({
+        "note_id":object_id
+    })
+
+    if saved_flashcards:
+        return {
+            "flashcards":saved_flashcards["flashcards"]
+        }
     document=list(
         embeddings_collection.find({
             "note_id":object_id
         })
     )
 
-    all_keywords=[]
+    all_flashcards=[]
 
     for i in range(0,len(document),10):
         batch=document[i:i+10]
@@ -93,10 +145,17 @@ def flashcards(note_id:str):
             doc["chunk"] for doc in batch
         )
 
-        result = extract_keywords(content)
+        keyword = extract_keywords(content)
 
-        all_keywords.extend(result)
+        flashcard=produce_flashcard(keyword,content)
 
+        all_flashcards.extend(flashcard)
+
+
+    flashcards_collection.insert_one({
+        "note_id":object_id,
+        "flashcards":all_flashcards
+    })
     return {
-        "keywords":all_keywords
-    }
+        "flashcards":all_flashcards
+    } 
