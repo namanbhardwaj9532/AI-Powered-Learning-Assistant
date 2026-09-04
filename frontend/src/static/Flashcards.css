@@ -3,50 +3,49 @@
 }
 
 .flashcards-page {
-    min-height: 100vh;
     background: #111111;
     color: white;
 
-    padding: 50px 30px;
+    padding: 20px 20px 15px;
 
     text-align: center;
 }
 
 .flashcards-page h1 {
     margin: 0;
-    font-size: 32px;
+    font-size: 26px;
 }
 
 .flashcards-subtitle {
-    margin: 8px 0 35px;
+    margin: 5px 0 15px;
     color: #999;
+    font-size: 13px;
 }
 
 
-/* ================= CARD AREA ================= */
+/* CARD AREA */
 
 .flashcards-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 25px;
+    gap: 12px;
 
     width: 100%;
-    max-width: 950px;
+    max-width: 650px;
 
-    margin: auto;
+    margin: 0 auto;
 }
 
 
-/* ================= CARD ================= */
+/* CARD */
 
 .flashcard-container {
-    width: 600px;
-    height: 360px;
+    width: 420px;
+    height: 250px;
 
     perspective: 1000px;
-
     cursor: pointer;
 }
 
@@ -57,7 +56,6 @@
     position: relative;
 
     transition: transform 0.6s;
-
     transform-style: preserve-3d;
 }
 
@@ -66,7 +64,7 @@
 }
 
 
-/* ================= CARD SIDES ================= */
+/* CARD SIDES */
 
 .flashcard-side {
     width: 100%;
@@ -79,12 +77,11 @@
     justify-content: center;
     align-items: center;
 
-    padding: 40px;
+    padding: 20px;
 
-    border-radius: 18px;
+    border-radius: 12px;
 
     background: #1b1b1b;
-
     border: 1px solid #333;
 
     backface-visibility: hidden;
@@ -99,53 +96,53 @@
 }
 
 
-/* ================= TEXT ================= */
+/* TEXT */
 
 .card-label {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
 
     color: #999;
-
     letter-spacing: 1px;
 
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .flashcard-side h2 {
-    max-width: 500px;
+    max-width: 360px;
 
     margin: 0;
 
-    font-size: 25px;
-    line-height: 1.5;
+    font-size: 19px;
+    line-height: 1.4;
 }
 
 .flashcard-back p:not(.flip-hint) {
-    max-width: 500px;
+    max-width: 360px;
 
     margin: 0;
 
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.5;
 
     color: #ddd;
 }
 
 .flip-hint {
-    margin-top: 30px;
+    margin-top: 12px;
 
-    font-size: 12px;
-
+    font-size: 10px;
     color: #777;
 }
 
 
-/* ================= ARROWS ================= */
+/* ARROWS */
 
 .flashcard-arrow {
-    width: 45px;
-    height: 45px;
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
 
     border: 1px solid #444;
     border-radius: 50%;
@@ -153,7 +150,7 @@
     background: #1b1b1b;
     color: white;
 
-    font-size: 22px;
+    font-size: 16px;
 
     cursor: pointer;
 
@@ -171,51 +168,57 @@
 }
 
 
-/* ================= COUNTER ================= */
+/* COUNTER */
 
 .flashcard-counter {
-    margin-top: 20px;
+    margin: 8px 0 0;
 
     color: #888;
-
-    font-size: 13px;
+    font-size: 11px;
 }
 
 
-/* ================= MOBILE ================= */
+/* MOBILE */
 
 @media (max-width: 700px) {
 
     .flashcards-page {
-        padding: 40px 15px;
+        padding: 15px 10px 10px;
+    }
+
+    .flashcards-page h1 {
+        font-size: 23px;
+    }
+
+    .flashcards-subtitle {
+        margin-bottom: 12px;
     }
 
     .flashcards-wrapper {
-        gap: 10px;
+        gap: 6px;
     }
 
     .flashcard-container {
         width: 100%;
-        max-width: 500px;
-        height: 330px;
+        max-width: 380px;
+        height: 240px;
     }
 
     .flashcard-side {
-        padding: 25px;
+        padding: 18px;
     }
 
     .flashcard-side h2 {
-        font-size: 20px;
+        font-size: 17px;
     }
 
     .flashcard-back p:not(.flip-hint) {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .flashcard-arrow {
-        width: 38px;
-        height: 38px;
-
-        font-size: 18px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
     }
 }

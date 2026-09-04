@@ -36,8 +36,8 @@ function Navbar() {
                     Chatbot
                 </Link>
 
-                <Link to="/test">
-                    Test
+                <Link to="/contest">
+                    Tests
                 </Link>
             </div>
 

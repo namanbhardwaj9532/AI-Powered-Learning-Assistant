@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../static/file.css";
-
+import Flashcards from "./flashcards";
 function File() {
     const [title, setTitle] = useState("");
     const [filename, setFilename] = useState("");
@@ -88,10 +88,11 @@ function File() {
                     <span className="file-name">
                         Total pages: {tol}
                     </span>
+                    <button class="test-btn" onClick={test}>practice</button>
                 </div>
                 <div>
-                    <button class="test-btn" onClick={test}>test</button>
-                    <button class="test-btn" onClick={()=>(navigate(`/flashcards/${note_id}`))}>flashcards</button>
+                    
+                    <Flashcards />
                 </div>
                 <div className="file-content">
                     <p className="note-text">

@@ -73,13 +73,14 @@
 /* ================= TEST BUTTON ================= */
 
 .test-btn {
-    background: #ffffff;
-    color: #111111;
+    background: red;
+    color: white;
 
     font-size: 14px;
     font-weight: 600;
 
     padding: 11px 20px;
+    margin-left: 600px;
 
     border: none;
     border-radius: 8px;
@@ -287,3 +288,4 @@
         font-size: 25px;
     }
 }
+

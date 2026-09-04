@@ -99,7 +99,6 @@ function Main() {
                         </div>
 
                     </div>
-
                 </div>
 
                 {notes.length === 0 ? (

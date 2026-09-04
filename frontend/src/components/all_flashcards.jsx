@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import "../static/Flashcards.css";
 
-function Flashcards() {
+function UserFlashcards() {
     const [flashcards, setFlashcards] = useState([]);
     const [flipped, setFlipped] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const { note_id } = useParams();
-
     useEffect(() => {
         showflashcards();
-    }, [note_id]);
+    }, []);
 
     async function showflashcards() {
         try {
             const response = await fetch(
-                `http://localhost:8000/${note_id}/flashcards`,
+                "http://localhost:8000/flashcards",
                 {
                     method: "GET",
                     credentials: "include"
@@ -26,10 +23,14 @@ function Flashcards() {
             const data = await response.json();
 
             setFlashcards(data.flashcards);
+            setCurrentIndex(0);
+            setFlipped(false);
+
         } catch (error) {
             console.error("Flashcards error:", error);
         }
     }
+
 
     function flipCard() {
         setFlipped(prev => !prev);
@@ -143,4 +144,4 @@ function Flashcards() {
     );
 }
 
-export default Flashcards;
+export default UserFlashcards;

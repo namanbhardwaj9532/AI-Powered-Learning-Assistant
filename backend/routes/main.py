@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request
 from dependencies.check import get_user
 from fastapi.responses import JSONResponse
-from config.db import notes_collection
+from config.db import notes_collection,flashcards_collection
 
 router=APIRouter()
 
@@ -30,3 +30,4 @@ def logout(request:Request):
     })
     response.delete_cookie("uid")
     return response
+

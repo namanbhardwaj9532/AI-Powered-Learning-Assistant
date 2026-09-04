@@ -16,7 +16,7 @@ function Test() {
     async function quiz() {
         try {
             const response = await fetch(
-                `http://localhost:8000/${note_id}/test`,
+                `http://localhost:8000/${note_id}/practice`,
                 {
                     method: "GET",
                     credentials: "include"
@@ -41,7 +41,7 @@ function Test() {
     async function submitquiz() {
         try {
             const response = await fetch(
-                `http://localhost:8000/${note_id}/test/submit`,
+                `http://localhost:8000/${note_id}/practice/submit`,
                 {
                     method: "POST",
                     credentials: "include",

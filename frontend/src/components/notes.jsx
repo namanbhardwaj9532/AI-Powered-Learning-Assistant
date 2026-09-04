@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../static/Notes.css";
 import Navbar from "./navbar"
+import UserFlashcards from "./all_flashcards";
 
 function Notes() {
     const [title, setTitle] = useState("");
@@ -69,7 +70,7 @@ function Notes() {
             <div className="notes-page">
 
                 <div className="notes-container">
-
+                    <UserFlashcards />
                     <h1>My Notes</h1>
                     <p className="subtitle">
                         Upload and manage your study notes
