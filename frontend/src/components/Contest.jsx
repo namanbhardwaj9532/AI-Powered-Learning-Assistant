@@ -1,66 +1,165 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "./navbar";
+import { useParams } from "react-router-dom";
+import "../static/Test.css";
 
-function Contest() {
+function Test() {
+    const [questions, setQuestions] = useState([]);
+    const { note_id } = useParams();
+    const [answers, setanswers] = useState({});
+    const [submitted, setsubmitted] = useState(false);
+    const [result, setresult] = useState(null);
+    const [testId, setTestId] = useState(null);
 
-    const [notes, setnotes] = useState([])
-
-    const navigate = useNavigate()
     useEffect(() => {
-        async function getNotes() {
-            const response = await fetch("http://localhost:8000/notes", {
+        quiz();
+    }, [note_id]);
+
+    async function quiz() {
+    try {
+        const response = await fetch(
+            `http://localhost:8000/${note_id}/test`,
+            {
+                method: "GET",
                 credentials: "include"
-            });
-
-            if (response.status === 401) {
-                navigate("/login");
-                return;
             }
+        );
 
-            const data = await response.json();
-            setnotes(data);
-        }
+        const data = await response.json();
 
-        getNotes();
-    }, [navigate]);
+        setTestId(data.test_id);
+        setQuestions(data.questions);
+
+    } catch (error) {
+        console.error("Quiz error:", error);
+    }
+}
+
+    function handleanswers(questionid, answer) {
+        setanswers(prev => ({
+            ...prev,
+            [questionid]: answer
+        }));
+    }
+
+    async function submitquiz() {
+    try {
+        const response = await fetch(
+            "http://localhost:8000/test/submit",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    test_id: testId,
+                    answers: answers
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        setresult(data);
+        setsubmitted(true);
+
+    } catch (error) {
+        console.error("Submit error:", error);
+    }
+}
 
     return (
-        <div>
-            <Navbar />
-            {notes.length === 0 ? (
-                <div className="empty-notes">
-                    <p>No notes yet.</p>
-                    <span>Upload your first note above.</span>
-                </div>
-            ) : (
-                <div className="notes-grid">
+        <div className="test-page">
 
-                    {notes.map((note) => (
+            <div className="test-container">
 
-                        <div
-                            className="note"
-                            key={note._id}
-                            onClick={() =>
-                                navigate(`/test/${note._id}`)
-                            }
-                        >
+                <header className="test-header">
+                    <h1>Quiz</h1>
+                    <p>Test your understanding of the notes.</p>
+                </header>
 
-                            <div className="note-icon">
-                                PDF
+                {!submitted && (
+                    <div className="questions">
+
+                        {questions.map((item) => (
+                            <div className="question-card" key={item.id}>
+
+                                <h3>
+                                    <span>{item.id}</span>
+                                    {item.question}
+                                </h3>
+
+                                <div className="options">
+
+                                    {item.options.map((option, optionIndex) => (
+                                        <label
+                                            className="option"
+                                            key={optionIndex}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name={`question-${item.id}`}
+                                                onChange={() =>
+                                                    handleanswers(
+                                                        item.id,
+                                                        option
+                                                    )
+                                                }
+                                            />
+
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+
+                                </div>
+
                             </div>
+                        ))}
 
-                            <h3>{note.title}</h3>
+                        {questions.length > 0 && (
+                            <button
+                                className="submit-btn"
+                                onClick={submitquiz}
+                            >
+                                Submit Quiz
+                            </button>
+                        )}
 
+                    </div>
+                )}
 
+                {submitted && result && (
+                    <div className="result-card">
 
+                        <div className="result-score">
+                            {result.score}
+                            <span>/{result.total}</span>
                         </div>
 
-                    ))}
+                        <h2>Quiz Completed</h2>
 
-                </div>
-            )}
+                        <p>
+                            You answered {result.score} out of{" "}
+                            {result.total} questions correctly.
+                        </p>
+
+                        <button
+                            className="submit-btn"
+                            onClick={() => {
+                                setsubmitted(false);
+                                setresult(null);
+                            }}
+                        >
+                            Review Answers
+                        </button>
+
+                    </div>
+                )}
+
+            </div>
+
         </div>
     );
 }
-export default Contest;
+
+export default Test;

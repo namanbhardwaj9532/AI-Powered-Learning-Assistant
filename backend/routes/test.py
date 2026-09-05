@@ -1,35 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from bson import ObjectId
-from config.db import quiz_collection,embeddings_collection
+from config.db import quiz_collection,embeddings_collection,testcontent_collection, testattempts_collection
 from config.groq import groq
+from dependencies.check import get_user
 import random
 import json
 from pydantic import BaseModel
+from datetime import datetime, timezone
 
 router=APIRouter()
 
 @router.get("/{note_id}/test")
-def test(note_id: str):
+def test(note_id: str,
+         user=Depends(get_user)):
 
     object_id = ObjectId(note_id)
-
-    quiz=quiz_collection.find_one({
-        "note_id":object_id
-    })
-
-    if quiz:
-        questions = []
-
-        for question in quiz["questions"]:
-            questions.append({
-                "id": question["id"],
-                "question": question["question"],
-                "options": question["options"]
-            })
-
-        return {
-            "questions": questions
-        }
 
     document= list(
         embeddings_collection.find({
@@ -127,10 +112,12 @@ Text:
     result = groq(prompt)
     questions=json.loads(result)
     quiz = {
-        "note_id": object_id,
+        "user_id":user["_id"],
         "questions": questions
     }
-    quiz_collection.insert_one(quiz)
+    inserted_content=testcontent_collection.insert_one(quiz)
+
+    test_id=inserted_content.inserted_id
 
     questions_for_frontend = []
 
@@ -142,41 +129,47 @@ Text:
         })
 
     return {
+        "test_id":str(test_id),
         "questions": questions_for_frontend
     }
 
 class quizanswers(BaseModel):
-    answers:dict
+    test_id: str
+    answers: dict
 
-@router.post("/{note_id}/test/submit")
+@router.post("/test/submit")
 def quizsubmission(
-    note_id: str,
-    submission: quizanswers
+    submission: quizanswers,
+    user=Depends(get_user)
 ):
-    objectid = ObjectId(note_id)
-
-    quiz = quiz_collection.find_one({
-        "note_id": objectid
+    test_content = testcontent_collection.find_one({
+        "_id": ObjectId(submission.test_id),
+        "user_id": user["_id"]
     })
 
-    if not quiz:
+    if not test_content:
         return {
-            "message": "Quiz not found"
+            "message": "Test not found"
         }
 
     score = 0
 
-    for question in quiz["questions"]:
+    for question in test_content["questions"]:
         q_id = str(question["id"])
 
-        correctanswer = question["correct_answer"]
-
-        answer = submission.answers.get(q_id)
-
-        if answer == correctanswer:
+        if submission.answers.get(q_id) == question["correct_answer"]:
             score += 1
 
+    attempt={
+        "test_id": ObjectId(submission.test_id),
+        "score":score,
+        "wrong":len(test_content["questions"])-score,
+        "right":score,
+        "submitted_at": datetime.now(timezone.utc)
+    }
+
+    testattempts_collection.insert_one(attempt)
     return {
         "score": score,
-        "total": len(quiz["questions"])
+        "total": len(test_content["questions"])
     }

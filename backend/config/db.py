@@ -20,3 +20,4 @@ quiz_collection=db2["quiz"]
 flashcards_collection=db2["flashcards"]
 
 testcontent_collection=db2["testcontent"]
+testattempts_collection=db2["testattempts"]
